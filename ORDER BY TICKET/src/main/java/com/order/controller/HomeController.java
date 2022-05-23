@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-/**test testtest 정규형님 바보
+/**
  * Handles requests for the application home page.
  */
 @Controller

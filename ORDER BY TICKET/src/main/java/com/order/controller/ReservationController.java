@@ -1,42 +1,51 @@
 package com.order.controller;
 
-import javax.mail.Message;
-import javax.mail.Session;
+import java.io.OutputStream;
+import java.util.List;
+
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.order.domain.ReservationChoiceVO;
+import com.order.domain.ReservationVO;
+import com.order.service.ReservationService;
 
 
 @Controller
-@RequestMapping("/movie/*")
-public class MailController {
+@RequestMapping("/reservation/*")
+public class ReservationController {
 
 	@Autowired
 	private JavaMailSender mailSender;
 	
-	private static final Logger logger = LoggerFactory.getLogger(MailController.class);
+	@Autowired
+	private ReservationService reservationService;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
+	
+	
     
 	//----------------------------메일발송 JSP 로 이동------------------------
 	@RequestMapping(value = "/mailSend", method = RequestMethod.GET)
-	public void getMailSend() {
-		logger.info("메일발송 JSP진입");
+	public void getMailSend() throws Exception {
+		logger.info("--------------메일발송 JSP진입--------------");
 	}
 	
 	//--------------------------------메일발송-----------------------------
 	//mailSend 코드
 	@RequestMapping(value = "/mailSend", method = RequestMethod.POST)
-	public String mailSend(HttpServletRequest request,String name,String last_name,String email,String phone,String message) {
+	public String mailSend(HttpServletRequest request,String name,String last_name,String email,String phone,String message) throws Exception{
 		try {
 			
 			MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -67,6 +76,28 @@ public class MailController {
 		}
 		
 		return "redirect:/";
+	}
+	
+	//----------------------------예약 페이지_GET------------------------
+	@RequestMapping(value = "/movieChoice", method = RequestMethod.GET)
+	public void getReservation(Model model)throws Exception {
+		logger.info("---------예약페이지 이동------");
+		
+		List<ReservationChoiceVO> menuList = reservationService.menuList();
+		logger.info("reservationService.meuList() : {}",menuList );
+		model.addAttribute("menuList",menuList);
+		
+	}
+	
+
+	//----------------------------예매내역 확인 페이지_GET------------------------
+	@RequestMapping(value = "/reservationConfirm", method = RequestMethod.GET)
+	public void getReservationConfirm(@RequestParam(name="member_id",required=false)String member_id , Model model)throws Exception {
+		logger.info("--------예매내역리스트 페이지------");
+		logger.info("member_id : {}",member_id);
+		
+			List<ReservationVO> list = reservationService.list(member_id);
+			model.addAttribute("reservationList",list);
 	}
 	
 }

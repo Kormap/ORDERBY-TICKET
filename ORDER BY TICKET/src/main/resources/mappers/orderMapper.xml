@@ -2,8 +2,14 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.order.mapper.orderMapper">
+<mapper namespace = "com.order.mapper.orderMapper">
 
-
+<!-- Reservaion 데이터 확인 테스트 -->
+<select id="testData" parameterType="String" resultType="com.order.domain.ReservationVO">
+		SELECT  
+				 B.reservation_no, B.reservation_nowdate, B.member_id, B.s_date,
+				 B.location_no, B.movie_name
+		FROM reservation AS B
+</select>
 	
 </mapper>
